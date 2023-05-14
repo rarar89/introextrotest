@@ -18,4 +18,14 @@ export class QuestionService {
 
     return question;
   }
+
+  public async getTotalQuestions(): Promise<number> {
+
+    return QuestionModel.length;
+  }
+
+  public async getAllQuestions(): Promise<Question[]> {
+
+    return QuestionModel;
+  }
 }
