@@ -18,7 +18,7 @@ export class PersTestController {
         }
     }
 
-    public getTestInfo = async (req: Request, res: Response, next: NextFunction) => {
+    public getTestInfo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
         try {
             
