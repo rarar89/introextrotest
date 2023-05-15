@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DefaultButton } from '../common/Button/Default';
+import ContentWrap from '../common/ContentWrap';
 
 export default function Welcome () {
 
@@ -11,12 +12,11 @@ export default function Welcome () {
         navigate('/question/1');
     }
 
-    return <div>
-        <header className="flex flex-col justify-center items-center h-screen">
-            <h1 className="text-6xl">Are you introvert or extrovert?</h1>
-            <div className='p-6'>
-                <DefaultButton onClick={startTestHandler}>Start Test</DefaultButton>
-            </div>
-        </header>
-    </div>;
+    return <ContentWrap>
+        <div>
+            <h1 className="text-5xl font-bold">Are you introvert or extrovert?</h1>
+            <p className="py-6">Complete 5 question test and learn if you are introverted or extroverted person!</p>
+            <DefaultButton onClick={startTestHandler}>Start Test</DefaultButton>
+        </div>
+    </ContentWrap>;
 }
