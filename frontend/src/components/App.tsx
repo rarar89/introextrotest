@@ -11,19 +11,12 @@ import Results from './Results';
 
 function App() {
 
-  const { isLoading, error, data } = useQuery<PersTestInfo, Error>({
-      queryKey: [`question`],
-      queryFn: () => getTestInfo()
-  });
-
-  
   return (
     <div className="App">
       <div>
-        <Error text={error ? 'An error occured fetching data' : null} />
         <Routes>
           <Route path="/" element={<Welcome />} />
-          <Route path="/question/:id" element={<Question totalQuestions={data?.totalQuestions} />} />
+          <Route path="/question/:id" element={<Question />} />
           <Route path="/results/" element={<Results />} />
         </Routes>
       </div>

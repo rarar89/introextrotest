@@ -9,14 +9,12 @@ import CheckBoxText from '../common/CheckBoxText';
 import { LOCAL_STORAGE_KEY } from '../../config';
 import Error from '../common/Error';
 import { verifyAnswers } from '../../utils/answers';
+import { PersTestInfo } from '../../types/persTest';
+import { getTestInfo } from '../../services/persTestService';
 
 const ANSWERS_MISSING_TEXT = 'Please answer all questions!';
 
-type Params = {
-    totalQuestions?: number
-}
-
-export default function Question ({ totalQuestions } : Params) {
+export default function Question () {
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -30,6 +28,13 @@ export default function Question ({ totalQuestions } : Params) {
         queryKey: [`question`, id],
         queryFn: () => getQuestionById(questionId)
     });
+
+    const persTestQuery = useQuery<PersTestInfo, Error>({
+        queryKey: [`question`],
+        queryFn: () => getTestInfo()
+    });
+
+    const totalQuestions = persTestQuery.data?.totalQuestions;
 
     let errorText = '';
 
