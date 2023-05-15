@@ -8,26 +8,12 @@ import ContentWrap from '../common/ContentWrap';
 import CheckBoxText from '../common/CheckBoxText';
 import { LOCAL_STORAGE_KEY } from '../../config';
 import Error from '../common/Error';
+import { verifyAnswers } from '../../utils/answers';
 
 const ANSWERS_MISSING_TEXT = 'Please answer all questions!';
 
 type Params = {
     totalQuestions?: number
-}
-
-const verifyAnswers = () => {
-
-    const answers = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-    if(!answers) {
-        return false;
-    }
-
-    const answersArray = JSON.parse(answers);
-
-    const incompleteAnswers = answersArray.filter((a:number|null)=>!a);
-
-    return incompleteAnswers.length === 0;
 }
 
 export default function Question ({ totalQuestions } : Params) {
@@ -44,16 +30,28 @@ export default function Question ({ totalQuestions } : Params) {
         queryKey: [`question`, id],
         queryFn: () => getQuestionById(questionId)
     });
-    
+
+    let errorText = '';
+
+    if(answerError) {
+        errorText = answerError;
+    }
+
+    if(error) {
+        errorText = 'An error occured fetching questions!';
+    }
 
     useEffect(() => {
+
+        if(!totalQuestions) {
+            return;
+        }
 
         const answers = localStorage.getItem(LOCAL_STORAGE_KEY);
 
         if(!answers) {
 
             const answerArray = Array(totalQuestions);
-
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(answerArray));
             setSelectedAnswers(answerArray)
             return;
@@ -61,12 +59,11 @@ export default function Question ({ totalQuestions } : Params) {
 
         const answersArray = JSON.parse(answers);
 
-        if(answersArray.length === 5) {
+        if(answersArray.length === totalQuestions) {
             setSelectedAnswers(answersArray);
         }
         
-        
-    }, []);
+    }, [totalQuestions]);
 
     const previousClickHandler = () => {
 
@@ -103,15 +100,20 @@ export default function Question ({ totalQuestions } : Params) {
     const isSelectedAnswer = (answer: Answer) => (selectedAnswers.includes(answer.id));
 
     return <ContentWrap>
-        <div className='py-2'><Error text={answerError} /></div>
-        <h1 className='text-2xl font-bold'><span className='text-slate-400'>{questionId} / {totalQuestions}</span> {data?.text}</h1>
-        <div>
-            {data?.answers?.map((a, i)=><div key={i}><CheckBoxText active={isSelectedAnswer(a)} text={a.text} onClick={()=>selectAnswer(a)} /></div>)}
-        </div>
-        <div className='flex justify-end'>
-            <div className='p-2'><DefaultButton onClick={previousClickHandler} disabled={questionId <= 1}>Previous</DefaultButton></div>
-            <div className='p-2'><DefaultButton onClick={nextClickHandler} disabled={questionId >= 5}>Next</DefaultButton></div>
-            {questionId >= 5 ? <div className='p-2'><DefaultButton onClick={finishClickHandler}>Finish</DefaultButton></div> : null}
-        </div>
+        <>
+            <div className='py-2'><Error text={errorText} /></div>
+            {isLoading ? 'loading...' : ''}
+            {data ? <>
+                <h1 className='text-2xl font-bold'><span className='text-slate-400'>{questionId} / {totalQuestions}</span> {data?.text}</h1>
+                <div>
+                    {data?.answers?.map((a, i)=><div key={i}><CheckBoxText active={isSelectedAnswer(a)} text={a.text} onClick={()=>selectAnswer(a)} /></div>)}
+                </div>
+                <div className='flex justify-end'>
+                    <div className='p-2'><DefaultButton onClick={previousClickHandler} disabled={questionId <= 1}>Previous</DefaultButton></div>
+                    <div className='p-2'><DefaultButton onClick={nextClickHandler} disabled={questionId >= 5}>Next</DefaultButton></div>
+                    {questionId >= 5 ? <div className='p-2'><DefaultButton onClick={finishClickHandler}>Finish</DefaultButton></div> : null}
+                </div>
+            </> : ''}
+        </>
     </ContentWrap>;
 }
