@@ -1,3 +1,5 @@
+import React from 'react';
+
 type ContentWrapProps = {
     children: string | JSX.Element | JSX.Element[]
 }

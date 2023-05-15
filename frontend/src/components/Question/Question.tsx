@@ -7,9 +7,27 @@ import { DefaultButton } from '../common/Button/Default';
 import ContentWrap from '../common/ContentWrap';
 import CheckBoxText from '../common/CheckBoxText';
 import { LOCAL_STORAGE_KEY } from '../../config';
+import Error from '../common/Error';
+
+const ANSWERS_MISSING_TEXT = 'Please answer all questions!';
 
 type Params = {
     totalQuestions?: number
+}
+
+const verifyAnswers = () => {
+
+    const answers = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+    if(!answers) {
+        return false;
+    }
+
+    const answersArray = JSON.parse(answers);
+
+    const incompleteAnswers = answersArray.filter((a:number|null)=>!a);
+
+    return incompleteAnswers.length === 0;
 }
 
 export default function Question ({ totalQuestions } : Params) {
@@ -18,7 +36,9 @@ export default function Question ({ totalQuestions } : Params) {
     const navigate = useNavigate();
 
     const questionId = parseInt(id ?? '');
+
     const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+    const [answerError, setAnswerError] = useState<string|null>(null);
 
     const { isLoading, error, data } = useQuery<QuestionType, Error>({
         queryKey: [`question`, id],
@@ -32,7 +52,7 @@ export default function Question ({ totalQuestions } : Params) {
 
         if(!answers) {
 
-            const answerArray = Array(5);
+            const answerArray = Array(totalQuestions);
 
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(answerArray));
             setSelectedAnswers(answerArray)
@@ -62,7 +82,13 @@ export default function Question ({ totalQuestions } : Params) {
 
         //wip: verify if all answered
 
-        navigate('/results/');
+        if(verifyAnswers()) {
+            setAnswerError(null);
+            navigate('/results/');
+        } else {
+            setAnswerError(ANSWERS_MISSING_TEXT);
+            console.log('error');
+        }
     }
 
     const selectAnswer = (answer: Answer) => {
@@ -77,7 +103,8 @@ export default function Question ({ totalQuestions } : Params) {
     const isSelectedAnswer = (answer: Answer) => (selectedAnswers.includes(answer.id));
 
     return <ContentWrap>
-        <h1 className='text-2xl font-bold'>{data?.text}</h1>
+        <div className='py-2'><Error text={answerError} /></div>
+        <h1 className='text-2xl font-bold'><span className='text-slate-400'>{questionId} / {totalQuestions}</span> {data?.text}</h1>
         <div>
             {data?.answers?.map((a, i)=><div key={i}><CheckBoxText active={isSelectedAnswer(a)} text={a.text} onClick={()=>selectAnswer(a)} /></div>)}
         </div>
