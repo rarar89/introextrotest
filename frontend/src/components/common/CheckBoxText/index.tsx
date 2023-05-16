@@ -8,7 +8,7 @@ type Params = {
 
 export default function CheckBoxText ({text, onClick, active}:Params) {
 
-    return <div className="flex" onClick={onClick}>
+    return <div className="flex">
         <div className="form-control">
             <label className="label cursor-pointer">
                 <input type="checkbox" checked={active} onChange={onClick} className="checkbox" />
