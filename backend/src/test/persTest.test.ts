@@ -14,17 +14,17 @@ describe('TEST PersTest API', () => {
 
   describe('[GET] /test/info', () => {
     it('response statusCode 200 /getInfo', () => {
-
       return request(app.getServer()).get(`${route.path}/info`).expect(200, { totalQuestions: QuestionModel.length });
     });
   });
 
   describe('[GET] /test/type/:answers', () => {
     it('response statusCode 200 /getType', () => {
-      
-      const answers = [1,5,10,15,20];
+      const answers = [1, 5, 10, 15, 20];
 
-      return request(app.getServer()).get(`${route.path}/type/${answers.join(',')}`).expect(200, { type: PersType.Introvert });
+      return request(app.getServer())
+        .get(`${route.path}/type/${answers.join(',')}`)
+        .expect(200, { type: PersType.Introvert });
     });
   });
 });

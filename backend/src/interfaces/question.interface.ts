@@ -1,7 +1,7 @@
-import { Answer } from "./answer.interface";
+import { Answer } from './answer.interface';
 
 export interface Question {
   id: number;
   text: string;
-  answers?: Answer[]
+  answers?: Answer[];
 }
