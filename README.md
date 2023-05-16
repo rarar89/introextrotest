@@ -6,9 +6,9 @@ To start application you have to start both backend and frontend:
         - navigate to project backend folder
         - npm run startdev
     
-    Frontend
+    Frontend:
         - navigate to project frontend folder
-        - npm run start. 
+        - npm run start
         - App available at http://localhost:3202/ (shoul open automatically)
 
 Author: Raivis Studens (rstudens@gmail.com)
