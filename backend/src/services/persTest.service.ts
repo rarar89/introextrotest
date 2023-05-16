@@ -4,7 +4,7 @@ import { HttpException } from '@exceptions/httpException';
 import { QuestionService } from './question.service';
 import { AnswerModel } from '@/models/answers.model';
 
-enum PersType {
+export enum PersType {
     Introvert = 'Introvert',
     Extrovert = 'Extrovert',
     Middle = 'Middle',
@@ -66,5 +66,5 @@ export class PersTestService {
         });
         
         return { introvert: totalIntrovertScore, extrovert: totalExtrovertScore };
-      }
+    }
 }

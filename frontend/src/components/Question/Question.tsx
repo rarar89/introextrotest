@@ -82,8 +82,6 @@ export default function Question () {
 
     const finishClickHandler = () => {
 
-        //wip: verify if all answered
-
         if(verifyAnswers()) {
             setAnswerError(null);
             navigate('/results/');
